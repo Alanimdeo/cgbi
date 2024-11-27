@@ -1,0 +1,35 @@
+{
+  "name": "cgbi",
+  "version": "1.0.0",
+  "description": "Encode and decode Apple CgBI PNG images",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "pnpm build && node test.js"
+  },
+  "keywords": [
+    "CgBI",
+    "PNG",
+    "iOS",
+    "Xcode",
+    "Apple",
+    "Image"
+  ],
+  "author": "Alanimdeo <alan@imdeo.kr>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/pako": "^2.0.3",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "pako": "^2.1.0"
+  }
+}
