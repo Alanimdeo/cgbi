@@ -23,22 +23,43 @@ const CGBI_BGRA = new Uint8Array([
   0x50, 0x00, 0x20, 0x06, 0x2c, 0xb8, 0x77, 0x66,
 ]);
 
+/**
+ * Check if the data has a PNG header.
+ * @param data - The data to check.
+ */
 export function hasPngHeader(data: Uint8Array) {
   return isEquals(data.subarray(0, 8), PNG_HEADER);
 }
 
+/**
+ * Check if the data has a CgBI chunk.
+ * @param data - The data to check.
+ * @param offset - The offset to start checking. Default is 8(right after the PNG header).
+ */
 export function hasCgbiChunk(data: Uint8Array, offset: number = 8) {
   return isEquals(data.subarray(offset, offset + 8), CGBI_CHUNK);
 }
 
+/**
+ * Check if the data is a standard PNG.
+ * @param data - The data to check.
+ */
 export function isStandardPng(data: Uint8Array) {
   return hasPngHeader(data) && !hasCgbiChunk(data);
 }
 
+/**
+ * Check if the data is a CgBI PNG.
+ * @param data - The data to check.
+ */
 export function isCgbiPng(data: Uint8Array) {
   return hasPngHeader(data) && hasCgbiChunk(data);
 }
 
+/**
+ * Convert Uint8Array to number.
+ * @param data - The data to convert.
+ */
 function toNumber(data: Uint8Array) {
   let result = 0;
   for (let i = 0; i < data.length; i++) {
@@ -47,6 +68,10 @@ function toNumber(data: Uint8Array) {
   return result;
 }
 
+/**
+ * Convert number to 4-byte Uint8Array.
+ * @param data - The data to convert.
+ */
 function toUint8Array(data: number) {
   const result = new Uint8Array(4);
   for (let i = 3; i >= 0; i--) {
@@ -56,6 +81,10 @@ function toUint8Array(data: number) {
   return result;
 }
 
+/**
+ * Concatenate multiple Uint8Array.
+ * @param arrays - The arrays to concatenate.
+ */
 function concatUint8Array(...arrays: Uint8Array[]) {
   let length = 0;
   for (const array of arrays) {
@@ -70,6 +99,11 @@ function concatUint8Array(...arrays: Uint8Array[]) {
   return result;
 }
 
+/**
+ * Check if two Uint8Array have the same content.
+ * @param a - The first array.
+ * @param b - The second array.
+ */
 function isEquals(a: Uint8Array, b: Uint8Array) {
   if (a.length !== b.length) {
     return false;
@@ -82,15 +116,28 @@ function isEquals(a: Uint8Array, b: Uint8Array) {
   return true;
 }
 
+/**
+ * Reader class for reading Uint8Array.
+ */
 class Reader {
   offset: number;
 
+  /**
+   * Create a new Reader.
+   * @param buffer - The buffer to read.
+   * @param offset - The offset to start reading. Default is 0.
+   */
   constructor(
     readonly buffer: Uint8Array,
     offset: number = 0
   ) {
     this.offset = offset;
   }
+
+  /**
+   * Read a number of bytes from the buffer.
+   * @param bytes - The number of bytes to read.
+   */
   read(bytes: number): Uint8Array {
     this.offset += bytes;
     return this.buffer.subarray(this.offset - bytes, this.offset);
@@ -108,6 +155,13 @@ const byteSwapFunctionMap = [
   },
 ];
 
+/**
+ * Swaps the red and blue bytes in the IDAT chunk.
+ * @param idat - The IDAT chunk data.
+ * @param width - The width of the image.
+ * @param height - The height of the image.
+ * @param isCgbi - Whether the image is a CgBI PNG. This is used to determine which zlib function to use. Default is true.
+ */
 async function byteSwapIdat(
   idat: Uint8Array,
   width: number,
@@ -132,6 +186,10 @@ async function byteSwapIdat(
   return await deflate(newIdat);
 }
 
+/**
+ * Convert a CgBI PNG to a standard PNG, or vice versa.
+ * @param data - The PNG file data.
+ */
 export async function convert(data: Uint8Array): Promise<Uint8Array> {
   let isCgbi = false;
   const reader = new Reader(data);
@@ -220,3 +278,11 @@ export async function convert(data: Uint8Array): Promise<Uint8Array> {
 
   return concatUint8Array(...result);
 }
+
+export default {
+  hasPngHeader,
+  hasCgbiChunk,
+  isStandardPng,
+  isCgbiPng,
+  convert,
+};

@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "test": "pnpm build && node test.js"
+    "test": "pnpm build --silent && node test.js"
   },
   "keywords": [
     "CgBI",
@@ -25,7 +25,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/pako": "^2.0.3",
-    "ts-node": "^10.9.2",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   },
