@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsup",
     "test": "pnpm build --silent && node test.js",
-    "publish": "pnpm build --silent && npm publish"
+    "prepublish": "pnpm build --silent"
   },
   "keywords": [
     "CgBI",
