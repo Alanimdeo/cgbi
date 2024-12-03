@@ -11,7 +11,8 @@
   ],
   "scripts": {
     "build": "tsup",
-    "test": "pnpm build --silent && node test.js"
+    "test": "pnpm build --silent && node test.js",
+    "publish": "pnpm build --silent && npm publish"
   },
   "keywords": [
     "CgBI",
